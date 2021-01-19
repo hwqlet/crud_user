@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息操作</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script>
+        function addRow() {
+            console.log("addRow")
+            $("table#info_table tr:last").after('<tr>\n' +
+                '                            <td id="ID"><input size="15"/></td>\n' +
+                '                            <td id="account"><input size="15"/></td>\n' +
+                '                            <td id="password"><input type="password" size="15"/></td>\n' +
+                '                            <td id="phone"><input size="15"/></td>\n' +
+                '                            <td id="operate">\n' +
+                '                                <input type="button" value="删除" onclick="delRow(this)" size="10" />\n' +
+                '                                <input type="button" value="更新" onclick="update(this)" size="10" />\n' +
+                '                            </td>\n' +
+                '                        </tr>')
+        }
+        function submit() {
+            console.log('submit')
+            // console.log($('table#info_table tr').length)
+            let data_send = []
+            console.log($('table#info_table tr'))
+            $('table#info_table').find('tr:not(:first)').each(function (){
+                let temp = {}
+                let td_arr = $(this).children()
+                console.log(td_arr)
+                // td_arr.eq(1).find('input').val()
+                temp['id'] = td_arr.eq(0).find('input').val()
+                temp['account'] = td_arr.eq(1).find('input').val()
+                temp['password'] = td_arr.eq(2).find('input').val()
+                temp['phone'] = td_arr.eq(3).find('input').val()
+                data_send.push(temp)
+            })
+            console.log("data_send", data_send, JSON.stringify(data_send))
+            $.ajax({
+                url: './user',
+                type: 'post',
+                async: true,
+                dataType: 'json',
+                data: {
+                    data_send: JSON.stringify(data_send)
+                },
+                success: function(data) {
+                    alert(data['msg'])
+                }
+            })
+            window.location.reload()
+        }
+        function delRow(th) {
+            console.log('delRow')
+            console.log($(th).parent().parent())
+            console.log($('table#info_table td#ID'))
+            let data_send = {}
+            data_send['id'] = $(th).parent().parent().eq(0).find('input').val()
+            data_send['type'] = 'delete'
+            console.log(data_send)
+            $.ajax({
+                url: './user',
+                type: 'post',
+                async: true,
+                dataType: 'json',
+                data: {
+                    data_send: JSON.stringify(data_send)
+                },
+                success: function(data) {
+                    alert(data['msg'])
+                }
+            })
+            $(th).parent().parent().remove()
+            window.location.reload()
+        }
+        function update(th) {
+            console.log('update')
+            console.log($('table#info_table td#ID'))
+            let data_send = {}
+            console.log($(th).parent().parent().children())
+            data_send['id'] = $(th).parent().parent().children().eq(0).find('input').val()
+            data_send['account'] = $(th).parent().parent().children().eq(1).find('input').val()
+            data_send['password'] = $(th).parent().parent().children().eq(2).find('input').val()
+            data_send['phone'] = $(th).parent().parent().children().eq(3).find('input').val()
+            data_send['type'] = 'update'
+            console.log($(th).parent().parent().eq(3).find('input'))
+            console.log(data_send)
+            $.ajax({
+                url: './user',
+                type: 'post',
+                async: true,
+                dataType: 'json',
+                data: {
+                    data_send: JSON.stringify(data_send)
+                },
+                success: function(data) {
+                    alert(data['msg'])
+                }
+            })
+            window.location.reload()
+        }
+        function quit() {
+            console.log('quit')
+            window.location.href = 'https://cas.qima-inc.com/public/users/logout?redirect=http://127.0.0.1:5000/demo/login'
+        }
+        function alarm(tp) {
+            console.log('alarm')
+            $.ajax({
+                url: './alarm',
+                type: 'post',
+                async: true,
+                dataType: 'json',
+                data: {
+                    alarm_type: tp
+                },
+                success: function(data) {
+                    console.log(data['msg'])
+                }
+            })
+        }
+    </script>
+</head>
+<body style="text-align: center; background-color: lightgray; padding: 24px 16px">
+    <div style="padding: 16px 24px; background-color: white; box-shadow: 10px 10px 5px #888888; height: 800px">
+        <h3 style="padding: 10px; text-shadow: 2px 2px 2px #ff0000">
+            Welcome to user_opera index
+        </h3>
+        <div>
+        <fieldset style="width: 600px; margin: auto; box-shadow: 10px 10px 5px #888888">
+            <legend>用户信息操作</legend>
+            <div style="alignment: center">
+                <div>
+                    <table id="info_table" style="text-align: center; margin: auto; outline: black 1px solid;">
+                        <tr>
+                            <th>ID</th>
+                            <th>账号</th>
+                            <th>密码</th>
+                            <th>电话</th>
+                            <th>操作</th>
+                        </tr>
+{#                        <tr>#}
+{#                            <td id="ID"><input size="15"/></td>#}
+{#                            <td id="account"><input size="15"/></td>#}
+{#                            <td id="password"><input type="password" size="15"/></td>#}
+{#                            <td id="phone"><input size="15"/></td>#}
+{#                            <td id="operate">#}
+{#                                <input type="button" value="删除" onclick="delRow(this)" size="10" />#}
+{#                                <input type="button" value="更新" onclick="update(this)" size="10" />#}
+{#                            </td>#}
+{#                        </tr>#}
+{#                        <tr>#}
+{#                            <td id="ID"><input size="15"/></td>#}
+{#                            <td id="account"><input size="15"/></td>#}
+{#                            <td id="password"><input type="password" size="15"/></td>#}
+{#                            <td id="phone"><input size="15"/></td>#}
+{#                            <td id="operate">#}
+{#                                <input type="button" value="删除" onclick="delRow(this)" size="10"/>#}
+{#                                <input type="button" value="更新" onclick="update(this)" size="10"/>#}
+{#                            </td>#}
+{#                        </tr>#}
+                    </table>
+                    <h4>
+                        <button style="margin: 5px; width: 290px; float: left" onclick="addRow()">添加新行</button>
+                        <button style="margin: 5px; width: 290px; float: right;" onclick="submit()">提交</button>
+                    </h4>
+                    <h4>
+                        <button style="margin: 5px; width: 140px;" onclick="quit()">退出</button>
+                        <button style="margin: 5px; width: 140px;" onclick="alarm('cpu')">CPU触发告警</button>
+                        <button style="margin: 5px; width: 140px;" onclick="alarm('mem')">内存触发告警</button>
+                    </h4>
+                </div>
+            </div>
+        </fieldset>
+        </div>
+    </div>
+    <script>
+        function init() {
+            console.log('initialized')
+            $.ajax({
+                url: './init',
+                type: 'get',
+                async: true,
+                success: function(data) {
+                    console.log('init_data', data.data)
+                    let init_data = data.data
+                    let row_count = 0
+                    for (let i = 0; i < init_data.length; i += 1) {
+                        addRow()
+                    }
+                    $('table#info_table').find('tr:not(:first)').each(function () {
+                        let temp = {}
+                        let td_arr = $(this).children()
+                        td_arr.eq(0).find('input').val(init_data[row_count]['id'])
+                        td_arr.eq(1).find('input').val(init_data[row_count]['account'])
+                        td_arr.eq(2).find('input').val(init_data[row_count]['password'])
+                        td_arr.eq(3).find('input').val(init_data[row_count]['phone'])
+                        row_count += 1
+                    })
+                }
+            })
+        }
+        init()
+    </script>
+</body>
+</html>
